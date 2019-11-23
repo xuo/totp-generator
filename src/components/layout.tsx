@@ -8,10 +8,9 @@
 import './reset.css'
 import './app.css'
 
-import PropTypes from 'prop-types'
 import React from 'react'
 
-const Layout = ({ children }) => {
+const Layout = ({ children }: Layout) => {
   return (
     <div>
       <main>{children}</main>
@@ -19,8 +18,8 @@ const Layout = ({ children }) => {
   )
 }
 
-Layout.propTypes = {
-  children: PropTypes.node.isRequired
+interface Layout {
+  children: React.ReactNode
 }
 
 export default Layout
