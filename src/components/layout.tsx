@@ -5,12 +5,12 @@
  * See: https://www.gatsbyjs.org/docs/use-static-query/
  */
 
-import './reset.css'
-import './app.css'
+import '../css/reset.css'
+import '../css/app.css'
 
 import React from 'react'
 
-const Layout = ({ children }: Layout) => {
+export const Layout = ({ children }: Layout) => {
   return (
     <div>
       <main>{children}</main>
@@ -21,5 +21,3 @@ const Layout = ({ children }: Layout) => {
 interface Layout {
   children: React.ReactNode
 }
-
-export default Layout
