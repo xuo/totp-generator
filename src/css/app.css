@@ -1,0 +1,74 @@
+@import url('https://rsms.me/inter/inter.css');
+
+body {
+  font-family: 'Inter', sans-serif;
+}
+
+@supports (font-variation-settings: normal) {
+  body {
+    font-family: 'Inter var', sans-serif;
+  }
+}
+
+.wrapper {
+  margin-top: 100px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+.content {
+  width: 400px;
+}
+
+.input-container {
+  margin-bottom: 15px;
+}
+
+.input-container__label {
+  display: block;
+  margin-bottom: 5px;
+  user-select: none;
+}
+
+.input {
+  width: 100%;
+  padding: 8px 10px;
+  box-shadow: none;
+  border: solid 1px #b5b5b5;
+  border-radius: 3px;
+}
+
+.input:focus {
+  outline: none;
+  box-shadow: 0 0 0 1px #2684ff;
+  border-color: #2684ff;
+}
+
+.token-container {
+  margin-bottom: 15px;
+  padding: 25px 0px;
+  border: solid 1px #b5b5b5;
+  display: flex;
+  justify-content: center;
+  border-radius: 3px;
+  font-size: 31px;
+  font-weight: 600;
+}
+
+.progress-container {
+  height: 18px;
+  position: relative;
+  background: #ececec;
+  overflow: hidden;
+}
+
+.progress-child {
+  display: block;
+  height: 100%;
+}
+
+.progress-bar {
+  background-color: #46c12c;
+}

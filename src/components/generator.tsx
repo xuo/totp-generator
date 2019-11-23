@@ -1,7 +1,8 @@
 import OTPAuth, { Secret } from 'otpauth'
 import React, { useEffect, useRef, useState } from 'react'
+import { getNowSeconds, percentage } from '../utils'
 
-import { getNowSeconds } from '../utils'
+import { ProgressBar } from './progress-bar'
 import { useInterval } from '../hooks/useInterval'
 
 interface TotpConfig {
@@ -46,8 +47,7 @@ export function Generator() {
 
   const updateToken = () => {
     const updatedConfig = Object.assign(config, { secret })
-    const totp = createTotpInstance(updatedConfig)
-    const newToken = totp.generate()
+    const newToken = createTotpInstance(updatedConfig).generate()
     const secondsLeft = config.period - (getNowSeconds() % config.period)
 
     setToken(newToken)
@@ -55,22 +55,24 @@ export function Generator() {
   }
 
   return (
-    <div>
-      <div>
-        <label>Secret:</label>
-        <input value={secret} onChange={e => setSecret(e.target.value)} />
-      </div>
-      <div>
-        <label>Token:</label>
-        <input
-          value={token}
-          onChange={e => setToken(e.target.value)}
-          disabled
-        />
-      </div>
-      <div>
-        <label>Expires in:</label>
-        <span>{secondsLeft}</span>
+    <div className="wrapper">
+      <div className="content">
+        <div className="input-container">
+          <label className="input-container__label">Secret</label>
+          <input
+            className="input"
+            value={secret}
+            onChange={e => setSecret(e.target.value)}
+            autoFocus
+          />
+        </div>
+        <div className="input-container">
+          <label className="input-container__label">
+            Token ({secondsLeft})
+          </label>
+          <div className="token-container">{token}</div>
+        </div>
+        <ProgressBar count={secondsLeft || 0} max={30} />
       </div>
     </div>
   )
