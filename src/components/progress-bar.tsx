@@ -1,5 +1,8 @@
 import React from 'react'
 
+/**
+ * Progress bar component
+ */
 export const ProgressBar = ({ count, max = 100 }: Props) => (
   <div className="progress-container">
     <span

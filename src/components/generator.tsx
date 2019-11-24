@@ -1,6 +1,6 @@
 import OTPAuth, { Secret } from 'otpauth'
 import React, { useEffect, useState } from 'react'
-import { getNowSeconds, isStringValidSecret } from '../utils'
+import { generateSecret, getNowSeconds, isStringValidSecret } from '../utils'
 
 import { ProgressBar } from './progress-bar'
 import { useInterval } from '../hooks/useInterval'
@@ -14,11 +14,17 @@ interface TotpConfig {
   issuer?: string
 }
 
+/**
+ * Create a new OTPAuth auth instance with given config
+ */
 function createTotpInstance(config: TotpConfig) {
   return new OTPAuth.TOTP(config)
 }
 
-const defaultSecret = '63VIJDT4TJJENFTUUS6HZIUANKKL'
+/**
+ * Create default secret and config
+ */
+const defaultSecret = generateSecret()
 const config: TotpConfig = {
   algorithm: 'SHA1',
   digits: 6,
@@ -26,12 +32,19 @@ const config: TotpConfig = {
   secret: defaultSecret
 }
 
+/**
+ * The actual TOTP token generator component
+ */
 export function Generator() {
   const [secret, setSecret] = useState(defaultSecret)
   const [token, setToken] = useState('')
   const [secondsLeft, setSecondsLeft] = useState<number | null>(null)
   const [invalidSecret, setInvalidSecret] = useState(false)
 
+  /**
+   * Update for how many more seconds the given token is valid
+   * if the token expires, start calculation of new token
+   */
   useInterval(() => {
     if (typeof secondsLeft == 'number') {
       if (secondsLeft > 1) {
@@ -42,12 +55,18 @@ export function Generator() {
     }
   }, 1000)
 
+  /**
+   * Start calculation of new token when secret changes
+   */
   useEffect(() => {
     if (secret.length > 0) {
       updateToken()
     }
   }, [secret])
 
+  /**
+   * Hide "invalid secret" error after a given timeout
+   */
   useEffect(() => {
     const id = setTimeout(() => {
       setInvalidSecret(false)
@@ -58,6 +77,9 @@ export function Generator() {
     }
   }, [invalidSecret])
 
+  /**
+   * Hide "invalid secret" error after a given timeout
+   */
   const updateToken = () => {
     const updatedConfig = Object.assign(config, { secret })
     const newToken = createTotpInstance(updatedConfig).generate()
@@ -67,6 +89,12 @@ export function Generator() {
     setSecondsLeft(secondsLeft)
   }
 
+  /**
+   * Update secret
+   * detect if input is a valid otpauth uri
+   * check if input is actually a valid OTP token
+   * (only includes valid RFC 4648 standard characters)
+   */
   const updateSecret = (value: string) => {
     if (value.includes('otpauth://')) {
       const parsedOtpConfig = Object.fromEntries(new URLSearchParams(value))
@@ -87,10 +115,16 @@ export function Generator() {
     setSecret(value)
   }
 
+  /**
+   * Secret input change handler
+   */
   const handleSecretChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     updateSecret(e.target.value)
   }
 
+  /**
+   * Paste input handler
+   */
   const handlePaste = (e: React.ClipboardEvent<HTMLDivElement>) => {
     updateSecret(e.clipboardData.getData('text/plain'))
   }
