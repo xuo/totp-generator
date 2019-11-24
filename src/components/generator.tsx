@@ -67,25 +67,31 @@ export function Generator() {
     setSecondsLeft(secondsLeft)
   }
 
-  const resetError = () => {
-    if (invalidSecret) {
-      setInvalidSecret(false)
-    }
-  }
-
-  const handleSecretChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const value = e.target.value.trim().toUpperCase()
+  const updateSecret = (value: string) => {
+    value = value.trim().toUpperCase()
     const valid = isStringValidSecret(value)
+
     if (!valid) {
       setInvalidSecret(true)
     } else {
-      resetError()
+      if (invalidSecret) {
+        setInvalidSecret(false)
+      }
+
       setSecret(value)
     }
   }
 
+  const handleSecretChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    updateSecret(e.target.value)
+  }
+
+  const handlePaste = (e: React.ClipboardEvent<HTMLDivElement>) => {
+    updateSecret(e.clipboardData.getData('text/plain'))
+  }
+
   return (
-    <div className="wrapper">
+    <div className="wrapper" onPaste={handlePaste}>
       <h3>TOTP Generator</h3>
       <div className="content">
         <div className="input-container">
