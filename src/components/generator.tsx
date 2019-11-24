@@ -59,9 +59,7 @@ export function Generator() {
   }, [invalidSecret])
 
   const updateToken = () => {
-    const updatedConfig = Object.assign(config, {
-      secret: OTPAuth.Secret.fromB32(secret)
-    })
+    const updatedConfig = Object.assign(config, { secret })
     const newToken = createTotpInstance(updatedConfig).generate()
     const secondsLeft = config.period - (getNowSeconds() % config.period)
 
