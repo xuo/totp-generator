@@ -68,18 +68,23 @@ export function Generator() {
   }
 
   const updateSecret = (value: string) => {
-    value = value.trim().toUpperCase()
-    const valid = isStringValidSecret(value)
+    if (value.includes('otpauth://')) {
+      const parsedOtpConfig = Object.fromEntries(new URLSearchParams(value))
+      value = parsedOtpConfig.secret
+    }
+    value = value.trim()
 
+    const valid = isStringValidSecret(value.toUpperCase())
     if (!valid) {
       setInvalidSecret(true)
-    } else {
-      if (invalidSecret) {
-        setInvalidSecret(false)
-      }
-
-      setSecret(value)
+      return
     }
+
+    if (invalidSecret) {
+      setInvalidSecret(false)
+    }
+
+    setSecret(value)
   }
 
   const handleSecretChange = (e: React.ChangeEvent<HTMLInputElement>) => {
