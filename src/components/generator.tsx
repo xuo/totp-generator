@@ -1,6 +1,6 @@
 import OTPAuth, { Secret } from 'otpauth'
-import React, { useEffect, useRef, useState } from 'react'
-import { getNowSeconds, percentage } from '../utils'
+import React, { useEffect, useState } from 'react'
+import { getNowSeconds, isStringValidSecret } from '../utils'
 
 import { ProgressBar } from './progress-bar'
 import { useInterval } from '../hooks/useInterval'
@@ -30,6 +30,7 @@ export function Generator() {
   const [secret, setSecret] = useState(defaultSecret)
   const [token, setToken] = useState('')
   const [secondsLeft, setSecondsLeft] = useState<number | null>(null)
+  const [invalidSecret, setInvalidSecret] = useState(false)
 
   useInterval(() => {
     if (typeof secondsLeft == 'number') {
@@ -42,11 +43,25 @@ export function Generator() {
   }, 1000)
 
   useEffect(() => {
-    updateToken()
+    if (secret.length > 0) {
+      updateToken()
+    }
   }, [secret])
 
+  useEffect(() => {
+    const id = setTimeout(() => {
+      setInvalidSecret(false)
+    }, 800)
+
+    return () => {
+      clearInterval(id)
+    }
+  }, [invalidSecret])
+
   const updateToken = () => {
-    const updatedConfig = Object.assign(config, { secret })
+    const updatedConfig = Object.assign(config, {
+      secret: OTPAuth.Secret.fromB32(secret)
+    })
     const newToken = createTotpInstance(updatedConfig).generate()
     const secondsLeft = config.period - (getNowSeconds() % config.period)
 
@@ -54,25 +69,47 @@ export function Generator() {
     setSecondsLeft(secondsLeft)
   }
 
+  const resetError = () => {
+    if (invalidSecret) {
+      setInvalidSecret(false)
+    }
+  }
+
+  const handleSecretChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const value = e.target.value.trim().toUpperCase()
+    const valid = isStringValidSecret(value)
+    if (!valid) {
+      setInvalidSecret(true)
+    } else {
+      resetError()
+      setSecret(value)
+    }
+  }
+
   return (
     <div className="wrapper">
+      <h3>TOTP Generator</h3>
       <div className="content">
         <div className="input-container">
           <label className="input-container__label">Secret</label>
           <input
-            className="input"
+            className={invalidSecret ? 'input input--error' : 'input'}
             value={secret}
-            onChange={e => setSecret(e.target.value)}
+            onChange={handleSecretChange}
             autoFocus
           />
         </div>
-        <div className="input-container">
-          <label className="input-container__label">
-            Token ({secondsLeft})
-          </label>
-          <div className="token-container">{token}</div>
-        </div>
-        <ProgressBar count={secondsLeft || 0} max={30} />
+        {secret.length > 0 && (
+          <>
+            <div className="input-container">
+              <label className="input-container__label">
+                Token ({secondsLeft})
+              </label>
+              <div className="token-container">{token}</div>
+            </div>
+            <ProgressBar count={secondsLeft || 0} max={30} />
+          </>
+        )}
       </div>
     </div>
   )

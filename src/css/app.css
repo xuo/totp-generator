@@ -38,12 +38,18 @@ body {
   box-shadow: none;
   border: solid 1px #b5b5b5;
   border-radius: 3px;
+  transition: box-shadow 0.08s ease-in-out;
 }
 
 .input:focus {
   outline: none;
   box-shadow: 0 0 0 1px #2684ff;
   border-color: #2684ff;
+}
+
+.input--error {
+  box-shadow: 0 0 0 1px #ff2626 !important;
+  border-color: #ff2626 !important;
 }
 
 .token-container {
@@ -62,13 +68,16 @@ body {
   position: relative;
   background: #ececec;
   overflow: hidden;
+  border-radius: 3px;
 }
 
-.progress-child {
+.progress-outer {
   display: block;
   height: 100%;
 }
 
-.progress-bar {
+.progress-inner {
+  display: block;
+  height: 100%;
   background-color: #46c12c;
 }
