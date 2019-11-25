@@ -6,14 +6,6 @@ import React from 'react'
 /**
  * Layout wrapper component
  */
-export const Layout = ({ children }: Layout) => {
-  return (
-    <div>
-      <main>{children}</main>
-    </div>
-  )
-}
-
-interface Layout {
-  children: React.ReactNode
+export const Layout = ({ children }: { children: React.ReactNode }) => {
+  return <main>{children}</main>
 }

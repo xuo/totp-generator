@@ -6,7 +6,7 @@ export function getNowSeconds() {
 }
 
 /**
- * Valid OTP secret characters according to RFC 4648 standard
+ * Valid TOTP secret characters according to RFC 4648 standard
  * https://tools.ietf.org/html/rfc4648
  */
 const secretAlphabet = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ234567'
@@ -25,7 +25,7 @@ export function isStringValidSecret(string: string) {
 }
 
 /**
- * Generate a valid OTP secret with given parameters
+ * Generate a valid TOTP secret with given parameters
  */
 export function generateSecret(length = 16, chars = secretAlphabet) {
   let secret = ''

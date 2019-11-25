@@ -15,7 +15,7 @@ interface TotpConfig {
 }
 
 /**
- * Create a new OTPAuth auth instance with given config
+ * Create a new OTPAuth instance with given config
  */
 function createTotpInstance(config: TotpConfig) {
   return new OTPAuth.TOTP(config)
@@ -33,7 +33,7 @@ const config: TotpConfig = {
 }
 
 /**
- * The actual TOTP token generator component
+ * Main TOTP token generator component
  */
 export function Generator() {
   const [secret, setSecret] = useState(defaultSecret)
@@ -92,7 +92,7 @@ export function Generator() {
   /**
    * Update secret
    * detect if input is a valid otpauth uri
-   * check if input is actually a valid OTP token
+   * check if input is actually a valid TOTP token
    * (only includes valid RFC 4648 standard characters)
    */
   const updateSecret = (value: string) => {
@@ -133,27 +133,64 @@ export function Generator() {
     <div className="wrapper" onPaste={handlePaste}>
       <h3>TOTP Generator</h3>
       <div className="content">
-        <div className="input-container">
-          <label className="input-container__label">Secret</label>
-          <input
-            className={invalidSecret ? 'input input--error' : 'input'}
-            value={secret}
-            onChange={handleSecretChange}
-            autoFocus
-          />
-        </div>
+        <SecretInput
+          invalidSecret={invalidSecret}
+          secret={secret}
+          handleSecretChange={handleSecretChange}
+        />
         {secret.length > 0 && (
-          <>
-            <div className="input-container">
-              <label className="input-container__label">
-                Token ({secondsLeft})
-              </label>
-              <div className="token-container">{token}</div>
-            </div>
-            <ProgressBar count={secondsLeft || 0} max={30} />
-          </>
+          <Token token={token} secondsLeft={secondsLeft || 0} />
         )}
       </div>
     </div>
   )
+}
+
+/**
+ * Secret input component
+ */
+function SecretInput({
+  invalidSecret,
+  secret,
+  handleSecretChange
+}: SecretProps) {
+  return (
+    <div className="item-container">
+      <label className="item-label">Secret</label>
+      <input
+        className={invalidSecret ? 'input input--error' : 'input'}
+        value={secret}
+        onChange={handleSecretChange}
+        autoFocus
+      />
+    </div>
+  )
+}
+
+interface SecretProps {
+  invalidSecret: boolean
+  secret: string
+  handleSecretChange: (e: React.ChangeEvent<HTMLInputElement>) => void
+}
+
+/**
+ * Token container component
+ */
+function Token({ token, secondsLeft }: { token: string; secondsLeft: number }) {
+  return (
+    <>
+      <div className="item-container">
+        <label className="item-label">Token ({secondsLeft})</label>
+        <div className="token-container">{token}</div>
+      </div>
+      <Progress secondsLeft={secondsLeft || 0} />
+    </>
+  )
+}
+
+/**
+ * Token valid seconds-left progress component
+ */
+function Progress({ secondsLeft }: { secondsLeft: number }) {
+  return <ProgressBar count={secondsLeft} max={30} />
 }

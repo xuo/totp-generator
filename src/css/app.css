@@ -22,11 +22,11 @@ body {
   width: 400px;
 }
 
-.input-container {
+.item-container {
   margin-bottom: 15px;
 }
 
-.input-container__label {
+.item-label {
   display: block;
   margin-bottom: 5px;
   user-select: none;
