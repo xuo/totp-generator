@@ -102,6 +102,10 @@ export function Generator() {
     }
     value = value.trim()
 
+    if (value === secret) {
+      return
+    }
+
     const valid = isStringValidSecret(value.toUpperCase())
     if (!valid) {
       setInvalidSecret(true)
@@ -180,15 +184,14 @@ function Token({ token, secondsLeft }: { token: string; secondsLeft: number }) {
   /**
    * When clicking token text or token container
    * select the whole text
-   * and copy to clipboard
+   * and copy text to clipboard
    */
   const handleTokenClick = (
     e: React.MouseEvent<HTMLDivElement, MouseEvent>
   ) => {
-    const el = e.target as Node
     const selection = window.getSelection()
     if (selection) {
-      selection.selectAllChildren(el)
+      selection.selectAllChildren(e.target as Node)
       document.execCommand('copy')
     }
   }
