@@ -63,6 +63,10 @@ body {
   font-weight: 600;
 }
 
+.token-container:hover {
+  cursor: pointer;
+}
+
 .progress-container {
   height: 18px;
   position: relative;

@@ -1,5 +1,5 @@
 import OTPAuth, { Secret } from 'otpauth'
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 import { generateSecret, getNowSeconds, isStringValidSecret } from '../utils'
 
 import { ProgressBar } from './progress-bar'
@@ -158,14 +158,26 @@ function SecretInput({
   secret,
   handleSecretChange
 }: SecretProps) {
+  const inputEl = useRef<HTMLInputElement>(null)
+
+  /**
+   * Refocus input text after initial render
+   * to properly position cursor at the end
+   */
+  useEffect(() => {
+    if (inputEl.current) {
+      inputEl.current.focus()
+    }
+  }, [])
+
   return (
     <div className="item-container">
       <label className="item-label">Secret</label>
       <input
+        ref={inputEl}
         className={invalidSecret ? 'input input--error' : 'input'}
         value={secret}
         onChange={handleSecretChange}
-        autoFocus
       />
     </div>
   )
