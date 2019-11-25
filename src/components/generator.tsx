@@ -177,11 +177,29 @@ interface SecretProps {
  * Token container component
  */
 function Token({ token, secondsLeft }: { token: string; secondsLeft: number }) {
+  /**
+   * When clicking token text or token container
+   * select the whole text
+   * and copy to clipboard
+   */
+  const handleTokenClick = (
+    e: React.MouseEvent<HTMLDivElement, MouseEvent>
+  ) => {
+    const el = e.target as Node
+    const selection = window.getSelection()
+    if (selection) {
+      selection.selectAllChildren(el)
+      document.execCommand('copy')
+    }
+  }
+
   return (
     <>
       <div className="item-container">
         <label className="item-label">Token ({secondsLeft})</label>
-        <div className="token-container">{token}</div>
+        <div className="token-container" onClick={handleTokenClick}>
+          {token}
+        </div>
       </div>
       <Progress secondsLeft={secondsLeft || 0} />
     </>
